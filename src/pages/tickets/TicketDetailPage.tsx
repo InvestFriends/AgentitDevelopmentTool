@@ -234,7 +234,8 @@ export default function TicketDetailPage() {
                 <div key={r.id} className="bg-white border rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium text-sm">{r.title}</span>
-                    <Badge variant="outline" className="text-xs">{r.severity}</Badge>
+                    <Badge variant="outline" className="text-xs">P: {r.probability}</Badge>
+                    <Badge variant="outline" className="text-xs">I: {r.impact}</Badge>
                     <Badge variant="outline" className="text-xs">{r.status}</Badge>
                   </div>
                   {r.description && <p className="text-xs text-slate-600">{r.description}</p>}
@@ -254,7 +255,6 @@ export default function TicketDetailPage() {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium text-sm">{tc.title}</span>
                     <Badge variant="outline" className="text-xs">{tc.status}</Badge>
-                    <Badge variant="outline" className="text-xs">{tc.type}</Badge>
                   </div>
                   {tc.description && <p className="text-xs text-slate-600">{tc.description}</p>}
                 </div>

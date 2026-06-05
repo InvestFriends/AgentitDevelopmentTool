@@ -81,25 +81,27 @@ export default function AgentDetailPage() {
 
       <div className="bg-white rounded-lg border p-4 grid grid-cols-2 gap-4">
         <div>
-          <div className="text-xs text-slate-500 mb-1">Model</div>
-          <div className="text-sm font-mono">{agent.model ?? '—'}</div>
+          <div className="text-xs text-slate-500 mb-1">Stav</div>
+          <div className="text-sm font-medium">{agent.status}</div>
         </div>
         <div>
           <div className="text-xs text-slate-500 mb-1">Typ</div>
           <div className="text-sm">{agentTypeLabels[agent.type]}</div>
         </div>
+        <div>
+          <div className="text-xs text-slate-500 mb-1">Zpracováno celkem</div>
+          <div className="text-sm font-medium">{agent.total_processed}</div>
+        </div>
+        <div>
+          <div className="text-xs text-slate-500 mb-1">Úspěšnost</div>
+          <div className="text-sm font-medium">
+            {agent.total_processed > 0 ? Math.round(agent.success_count / agent.total_processed * 100) : 0} %
+          </div>
+        </div>
         {agent.description && (
           <div className="col-span-2">
             <div className="text-xs text-slate-500 mb-1">Popis</div>
             <p className="text-sm text-slate-700">{agent.description}</p>
-          </div>
-        )}
-        {agent.system_prompt && (
-          <div className="col-span-2">
-            <div className="text-xs text-slate-500 mb-1">System prompt</div>
-            <pre className="text-xs text-slate-600 bg-slate-50 p-3 rounded border overflow-auto max-h-40 whitespace-pre-wrap">
-              {agent.system_prompt}
-            </pre>
           </div>
         )}
       </div>
