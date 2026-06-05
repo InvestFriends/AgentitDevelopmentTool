@@ -35,9 +35,32 @@ export async function fetchTicketById(id: string): Promise<Ticket> {
 }
 
 export async function createTicket(input: Partial<Ticket>): Promise<Ticket> {
+  const [{ data: { user } }, workflowRes] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .from('workflows')
+      .select('id, workflow_states!workflow_states_workflow_id_fkey(id, state_key)')
+      .eq('is_active', true)
+      .limit(1)
+      .single(),
+  ])
+  if (workflowRes.error) throw workflowRes.error
+  if (!user) throw new Error('Uživatel není přihlášen')
+
+  const wf = workflowRes.data as unknown as { id: string; workflow_states: { id: string; state_key: string }[] }
+  const initialState = wf.workflow_states.find(s => s.state_key === 'NEW')
+  if (!initialState) throw new Error('Výchozí stav workflow nenalezen')
+
   const { data, error } = await supabase
     .from('tickets')
-    .insert([{ ...input, status: 'NEW', tags: input.tags ?? [] }])
+    .insert([{
+      ...input,
+      status: 'NEW',
+      tags: input.tags ?? [],
+      workflow_id: wf.id,
+      current_state_id: initialState.id,
+      reporter_id: user.id,
+    }])
     .select()
     .single()
   if (error) throw error
