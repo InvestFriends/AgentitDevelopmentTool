@@ -74,8 +74,8 @@ export default function AgentDetailPage() {
           <h1 className="text-xl font-bold text-slate-800">{agent.name}</h1>
           <div className="text-sm text-slate-500">{agentTypeLabels[agent.type]}</div>
         </div>
-        <span className={`ml-auto text-xs px-2 py-1 rounded-full font-medium ${agent.is_active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
-          {agent.is_active ? 'Aktivní' : 'Neaktivní'}
+        <span className={`ml-auto text-xs px-2 py-1 rounded-full font-medium ${agent.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+          {agent.status === 'ACTIVE' ? 'Aktivní' : agent.status}
         </span>
       </div>
 

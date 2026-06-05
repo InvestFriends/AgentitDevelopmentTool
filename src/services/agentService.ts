@@ -34,7 +34,7 @@ export async function fetchAgentQueue(agentId: string): Promise<Ticket[]> {
 export async function fetchDashboardStats() {
   const [ticketsRes, agentsRes] = await Promise.all([
     supabase.from('tickets').select('status, priority, created_at'),
-    supabase.from('agents').select('type, is_active'),
+    supabase.from('agents').select('type, status'),
   ])
   if (ticketsRes.error) throw ticketsRes.error
   if (agentsRes.error) throw agentsRes.error

@@ -60,7 +60,7 @@ export default function ManagementDashboard() {
   const total = tickets.length
   const open = tickets.filter(t => !['CLOSED', 'CANCELLED', 'REJECTED', 'RELEASED'].includes(t.status)).length
   const critical = tickets.filter(t => t.priority === 'CRITICAL' && !['CLOSED', 'CANCELLED', 'REJECTED', 'RELEASED'].includes(t.status)).length
-  const activeAgents = agents.filter(a => a.is_active).length
+  const activeAgents = agents.filter(a => (a as any).status === 'ACTIVE').length
 
   // Status distribution
   const statusMap: Record<string, number> = {}
