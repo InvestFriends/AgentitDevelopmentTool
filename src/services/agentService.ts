@@ -24,7 +24,7 @@ export async function fetchAgentQueue(agentId: string): Promise<Ticket[]> {
   const { data, error } = await supabase
     .from('tickets')
     .select('*, team:teams(*)')
-    .eq('agent_id', agentId)
+    .eq('assigned_agent_id', agentId)
     .not('status', 'in', '("CLOSED","CANCELLED","REJECTED","RELEASED")')
     .order('created_at', { ascending: false })
   if (error) throw error
