@@ -214,9 +214,9 @@ export default function TicketDetailPage() {
               {artifacts?.map(a => (
                 <div key={a.id} className="bg-white border rounded-lg p-3 flex items-start justify-between">
                   <div>
-                    <div className="font-medium text-sm">{a.name}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">{a.type} • {a.agent?.name}</div>
-                    {a.description && <p className="text-xs text-slate-600 mt-1">{a.description}</p>}
+                    <div className="font-medium text-sm">{a.title}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{a.type} • {a.agent?.name} • v{a.version}</div>
+                    {a.content && <p className="text-xs text-slate-600 mt-1 line-clamp-2">{a.content}</p>}
                   </div>
                   <span className="text-xs text-slate-400">{format(new Date(a.created_at), 'd.M.yyyy')}</span>
                 </div>
