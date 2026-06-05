@@ -8,7 +8,7 @@ import { Release } from '@/types'
 async function fetchReleases(): Promise<Release[]> {
   const { data, error } = await supabase
     .from('releases')
-    .select('*, manager:agents(*)')
+    .select('*, released_by:users!released_by_user_id(*)')
     .order('created_at', { ascending: false })
   if (error) throw error
   return (data ?? []) as unknown as Release[]
@@ -49,7 +49,6 @@ export default function ReleasesPage() {
                       {r.status}
                     </span>
                   </div>
-                  {r.name && <div className="text-sm text-slate-600">{r.name}</div>}
                   {r.description && <p className="text-xs text-slate-400 mt-1 line-clamp-2">{r.description}</p>}
                 </div>
                 <div className="text-right shrink-0">
@@ -58,8 +57,8 @@ export default function ReleasesPage() {
                       {format(new Date(r.release_date), 'd.M.yyyy')}
                     </div>
                   )}
-                  {r.manager && (
-                    <div className="text-xs text-slate-400 mt-0.5">{r.manager.name}</div>
+                  {(r as any).released_by && (
+                    <div className="text-xs text-slate-400 mt-0.5">{(r as any).released_by.full_name}</div>
                   )}
                 </div>
               </div>
