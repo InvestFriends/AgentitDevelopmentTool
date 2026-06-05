@@ -7,6 +7,19 @@ import { fetchDashboardStats } from '@/services/agentService'
 import { Skeleton } from '@/components/ui/skeleton'
 import { TicketStatus, TicketPriority } from '@/types'
 
+const STATUS_LABELS: Record<TicketStatus, string> = {
+  NEW: 'Nový', TRIAGE: 'Triage', BUSINESS_ANALYSIS: 'Business analýza',
+  TECHNICAL_ANALYSIS: 'Tech. analýza', SECURITY_REVIEW: 'Security review',
+  SOLUTION_DESIGN: 'Solution design', DEVELOPMENT: 'Vývoj', CODE_REVIEW: 'Code review',
+  TESTING: 'Testování', UAT: 'UAT', READY_FOR_RELEASE: 'Připraven k vydání',
+  RELEASED: 'Vydán', CLOSED: 'Uzavřen', BLOCKED: 'Blokován',
+  REJECTED: 'Zamítnut', ON_HOLD: 'Pozastaveno', REOPENED: 'Znovu otevřen', CANCELLED: 'Zrušen',
+}
+
+const PRIORITY_LABELS: Record<TicketPriority, string> = {
+  CRITICAL: 'Kritická', HIGH: 'Vysoká', MEDIUM: 'Střední', LOW: 'Nízká',
+}
+
 const STATUS_COLORS: Partial<Record<TicketStatus, string>> = {
   NEW: '#94a3b8',
   DEVELOPMENT: '#06b6d4',
@@ -68,12 +81,20 @@ export default function ManagementDashboard() {
   const statusData = Object.entries(statusMap)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
-    .map(([status, count]) => ({ status, count }))
+    .map(([status, count]) => ({
+      status,
+      label: STATUS_LABELS[status as TicketStatus] ?? status,
+      count,
+    }))
 
   // Priority distribution
   const priorityMap: Record<string, number> = {}
   tickets.forEach(t => { priorityMap[t.priority] = (priorityMap[t.priority] ?? 0) + 1 })
-  const priorityData = Object.entries(priorityMap).map(([priority, value]) => ({ priority, value }))
+  const priorityData = Object.entries(priorityMap).map(([priority, value]) => ({
+    priority,
+    label: PRIORITY_LABELS[priority as TicketPriority] ?? priority,
+    value,
+  }))
 
   return (
     <div className="space-y-4">
@@ -92,7 +113,7 @@ export default function ManagementDashboard() {
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={statusData} layout="vertical" margin={{ left: 16, right: 16 }}>
               <XAxis type="number" tick={{ fontSize: 11 }} />
-              <YAxis type="category" dataKey="status" tick={{ fontSize: 10 }} width={120} />
+              <YAxis type="category" dataKey="label" tick={{ fontSize: 10 }} width={140} />
               <Tooltip />
               <Bar dataKey="count" radius={[0, 4, 4, 0]}>
                 {statusData.map((entry, i) => (
@@ -113,11 +134,11 @@ export default function ManagementDashboard() {
               <Pie
                 data={priorityData}
                 dataKey="value"
-                nameKey="priority"
+                nameKey="label"
                 cx="50%"
                 cy="50%"
                 outerRadius={90}
-                label={({ priority, percent }) => `${priority} ${Math.round(percent * 100)}%`}
+                label={({ label, percent }: { label: string; percent: number }) => `${label} ${Math.round(percent * 100)}%`}
                 labelLine={false}
               >
                 {priorityData.map((entry, i) => (

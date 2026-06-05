@@ -68,11 +68,31 @@ export async function createTicket(input: Partial<Ticket>): Promise<Ticket> {
 }
 
 export async function updateTicketStatus(id: string, status: TicketStatus): Promise<void> {
+  // Fetch ticket's workflow_id to find matching workflow_state
+  const { data: ticket } = await supabase
+    .from('tickets')
+    .select('workflow_id')
+    .eq('id', id)
+    .single()
+
+  const updatePayload: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
+
+  if (ticket?.workflow_id) {
+    const { data: state } = await supabase
+      .from('workflow_states')
+      .select('id')
+      .eq('workflow_id', ticket.workflow_id)
+      .eq('state_key', status)
+      .maybeSingle()
+    if (state) updatePayload.current_state_id = state.id
+  }
+
   const { error } = await supabase
     .from('tickets')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update(updatePayload)
     .eq('id', id)
   if (error) throw error
+
   await supabase.from('audit_logs').insert([{
     ticket_id: id,
     action: 'STATUS_CHANGED',

@@ -24,6 +24,15 @@ const STATUSES: TicketStatus[] = [
   'READY_FOR_RELEASE','RELEASED','CLOSED','BLOCKED','REJECTED','ON_HOLD','REOPENED','CANCELLED',
 ]
 
+const statusLabels: Record<TicketStatus, string> = {
+  NEW: 'Nový', TRIAGE: 'Triage', BUSINESS_ANALYSIS: 'Business analýza',
+  TECHNICAL_ANALYSIS: 'Tech. analýza', SECURITY_REVIEW: 'Security review',
+  SOLUTION_DESIGN: 'Solution design', DEVELOPMENT: 'Vývoj', CODE_REVIEW: 'Code review',
+  TESTING: 'Testování', UAT: 'UAT', READY_FOR_RELEASE: 'Připraven k vydání',
+  RELEASED: 'Vydán', CLOSED: 'Uzavřen', BLOCKED: 'Blokován',
+  REJECTED: 'Zamítnut', ON_HOLD: 'Pozastaveno', REOPENED: 'Znovu otevřen', CANCELLED: 'Zrušen',
+}
+
 export default function TicketDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -118,7 +127,7 @@ export default function TicketDetailPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              {STATUSES.map(s => <SelectItem key={s} value={s}>{statusLabels[s]}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>

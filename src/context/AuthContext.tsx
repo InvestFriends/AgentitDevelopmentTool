@@ -21,12 +21,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
+    const { data: existing } = await supabase
       .from('users')
       .select('*, team:teams(*)')
       .eq('id', userId)
       .single()
-    if (data) setProfile(data as unknown as UserProfile)
+    if (existing) {
+      setProfile(existing as unknown as UserProfile)
+      return
+    }
+    // No public.users row yet — create one (handles users created before the trigger)
+    const { data: authUser } = await supabase.auth.getUser()
+    if (authUser.user) {
+      const email = authUser.user.email ?? ''
+      const full_name = (authUser.user.user_metadata?.full_name as string) ?? email.split('@')[0]
+      await supabase.from('users').upsert({ id: userId, email, full_name, role: 'VIEWER' })
+      const { data: created } = await supabase
+        .from('users')
+        .select('*, team:teams(*)')
+        .eq('id', userId)
+        .single()
+      if (created) setProfile(created as unknown as UserProfile)
+    }
   }
 
   useEffect(() => {
