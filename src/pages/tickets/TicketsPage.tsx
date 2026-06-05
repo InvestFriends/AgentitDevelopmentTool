@@ -21,6 +21,19 @@ const typeLabels: Record<TicketType, string> = {
   BUG: 'Bug', FEATURE: 'Feature', CHANGE: 'Změna', EPIC: 'Epic', STORY: 'Story', TASK: 'Úkol',
 }
 
+const statusLabels: Record<TicketStatus, string> = {
+  NEW: 'Nový', TRIAGE: 'Triage', BUSINESS_ANALYSIS: 'Business analýza',
+  TECHNICAL_ANALYSIS: 'Tech. analýza', SECURITY_REVIEW: 'Security review',
+  SOLUTION_DESIGN: 'Solution design', DEVELOPMENT: 'Vývoj', CODE_REVIEW: 'Code review',
+  TESTING: 'Testování', UAT: 'UAT', READY_FOR_RELEASE: 'Připraven k vydání',
+  RELEASED: 'Vydán', CLOSED: 'Uzavřen', BLOCKED: 'Blokován',
+  REJECTED: 'Zamítnut', ON_HOLD: 'Pozastaveno', REOPENED: 'Znovu otevřen', CANCELLED: 'Zrušen',
+}
+
+const priorityLabels: Record<TicketPriority, string> = {
+  CRITICAL: 'Kritická', HIGH: 'Vysoká', MEDIUM: 'Střední', LOW: 'Nízká',
+}
+
 export default function TicketsPage() {
   const navigate = useNavigate()
   const [filters, setFilters] = useState<TicketFilters>({})
@@ -56,14 +69,14 @@ export default function TicketsPage() {
           <SelectTrigger className="w-44"><SelectValue placeholder="Stav" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Všechny stavy</SelectItem>
-            {STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            {STATUSES.map(s => <SelectItem key={s} value={s}>{statusLabels[s]}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select onValueChange={v => setFilters(f => ({ ...f, priority: v === 'all' ? undefined : v as TicketPriority }))}>
           <SelectTrigger className="w-36"><SelectValue placeholder="Priorita" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Všechny</SelectItem>
-            {PRIORITIES.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+            {PRIORITIES.map(p => <SelectItem key={p} value={p}>{priorityLabels[p]}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select onValueChange={v => setFilters(f => ({ ...f, type: v === 'all' ? undefined : v as TicketType }))}>

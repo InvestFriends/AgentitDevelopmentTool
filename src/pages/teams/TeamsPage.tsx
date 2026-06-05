@@ -48,11 +48,6 @@ export default function TeamsPage() {
                   <div className="text-xs text-slate-400">celkem</div>
                 </div>
               </div>
-              {team.settings && (
-                <div className="text-xs text-slate-400 font-mono truncate">
-                  {JSON.stringify(team.settings).slice(0, 60)}
-                </div>
-              )}
             </div>
           ))}
           {!teams?.length && (

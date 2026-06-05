@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom'
+import { useLocation, useMatches } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { Button } from '@/components/ui/button'
 import { LogOut } from 'lucide-react'
@@ -15,11 +15,18 @@ const routeLabels: Record<string, string> = {
   '/releases': 'Releases',
 }
 
+function getLabel(pathname: string): string {
+  if (routeLabels[pathname]) return routeLabels[pathname]
+  if (/^\/tickets\/.+/.test(pathname)) return 'Detail ticketu'
+  if (/^\/agents\/.+/.test(pathname)) return 'Detail agenta'
+  return 'AgentitDevelopmentTool'
+}
+
 export default function Header() {
   const { pathname } = useLocation()
   const { profile, signOut } = useAuth()
 
-  const label = routeLabels[pathname] ?? 'AgentitDevelopmentTool'
+  const label = getLabel(pathname)
 
   return (
     <header className="h-14 border-b bg-white flex items-center justify-between px-6">

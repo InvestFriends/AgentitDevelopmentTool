@@ -7,7 +7,7 @@ import { AgentType } from '@/types'
 async function fetchAgentWorkload() {
   const [agentsRes, ticketsRes] = await Promise.all([
     supabase.from('agents').select('id, name, type, status'),
-    supabase.from('tickets').select('agent_id, status').not('status', 'in', '("CLOSED","CANCELLED","REJECTED","RELEASED")'),
+    supabase.from('tickets').select('assigned_agent_id, status').not('status', 'in', '("CLOSED","CANCELLED","REJECTED","RELEASED")'),
   ])
   if (agentsRes.error) throw agentsRes.error
   if (ticketsRes.error) throw ticketsRes.error
@@ -50,7 +50,7 @@ export default function AgentDashboard() {
   const workload = agents.map((a, i) => ({
     name: agentTypeLabels[a.type as AgentType] ?? a.name,
     fullName: a.name,
-    count: tickets.filter(t => t.agent_id === a.id).length,
+    count: tickets.filter(t => t.assigned_agent_id === a.id).length,
     active: a.status === 'ACTIVE',
     color: COLORS[i % COLORS.length],
   })).sort((a, b) => b.count - a.count)
@@ -79,7 +79,7 @@ export default function AgentDashboard() {
         <div className="bg-white border rounded-lg p-4">
           <div className="text-xs text-slate-500">Nepřiřazených</div>
           <div className="text-3xl font-bold text-amber-500 mt-1">
-            {tickets.filter(t => !t.agent_id).length}
+            {tickets.filter(t => !t.assigned_agent_id).length}
           </div>
         </div>
       </div>
