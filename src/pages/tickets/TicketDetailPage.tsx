@@ -16,13 +16,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
-import { TicketStatus } from '@/types'
+import { TicketStatus, TicketType, RiskLevel, RiskStatus, TestCaseStatus } from '@/types'
 
 const STATUSES: TicketStatus[] = [
   'NEW','TRIAGE','BUSINESS_ANALYSIS','TECHNICAL_ANALYSIS','SECURITY_REVIEW',
   'SOLUTION_DESIGN','DEVELOPMENT','CODE_REVIEW','TESTING','UAT',
   'READY_FOR_RELEASE','RELEASED','CLOSED','BLOCKED','REJECTED','ON_HOLD','REOPENED','CANCELLED',
 ]
+
+const typeLabels: Record<TicketType, string> = {
+  BUG: 'Bug', FEATURE: 'Feature', CHANGE: 'Změna', EPIC: 'Epic', STORY: 'Story', TASK: 'Úkol',
+}
+
+const riskLevelLabels: Record<RiskLevel, string> = {
+  LOW: 'Nízká', MEDIUM: 'Střední', HIGH: 'Vysoká', CRITICAL: 'Kritická',
+}
+
+const riskStatusLabels: Record<RiskStatus, string> = {
+  OPEN: 'Otevřené', MITIGATED: 'Zmírněno', ACCEPTED: 'Přijato', CLOSED: 'Uzavřeno',
+}
+
+const testCaseStatusLabels: Record<TestCaseStatus, string> = {
+  PENDING: 'Čeká', PASS: 'Prošel', FAIL: 'Neprošel', BLOCKED: 'Blokován', SKIPPED: 'Přeskočen',
+}
 
 const statusLabels: Record<TicketStatus, string> = {
   NEW: 'Nový', TRIAGE: 'Triage', BUSINESS_ANALYSIS: 'Business analýza',
@@ -145,7 +161,7 @@ export default function TicketDetailPage() {
         </div>
         <div>
           <div className="text-xs text-slate-500 mb-1">Typ</div>
-          <div className="text-sm font-medium">{ticket.type}</div>
+          <div className="text-sm font-medium">{typeLabels[ticket.type] ?? ticket.type}</div>
         </div>
         <div>
           <div className="text-xs text-slate-500 mb-1">Reporter</div>
@@ -243,9 +259,9 @@ export default function TicketDetailPage() {
                 <div key={r.id} className="bg-white border rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium text-sm">{r.title}</span>
-                    <Badge variant="outline" className="text-xs">P: {r.probability}</Badge>
-                    <Badge variant="outline" className="text-xs">I: {r.impact}</Badge>
-                    <Badge variant="outline" className="text-xs">{r.status}</Badge>
+                    <Badge variant="outline" className="text-xs">P: {riskLevelLabels[r.probability] ?? r.probability}</Badge>
+                    <Badge variant="outline" className="text-xs">D: {riskLevelLabels[r.impact] ?? r.impact}</Badge>
+                    <Badge variant="outline" className="text-xs">{riskStatusLabels[r.status] ?? r.status}</Badge>
                   </div>
                   {r.description && <p className="text-xs text-slate-600">{r.description}</p>}
                 </div>
@@ -263,7 +279,7 @@ export default function TicketDetailPage() {
                 <div key={tc.id} className="bg-white border rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium text-sm">{tc.title}</span>
-                    <Badge variant="outline" className="text-xs">{tc.status}</Badge>
+                    <Badge variant="outline" className="text-xs">{testCaseStatusLabels[tc.status] ?? tc.status}</Badge>
                   </div>
                   {tc.description && <p className="text-xs text-slate-600">{tc.description}</p>}
                 </div>
