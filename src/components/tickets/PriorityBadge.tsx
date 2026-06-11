@@ -9,7 +9,7 @@ const config: Record<TicketPriority, { label: string; className: string }> = {
 }
 
 export function PriorityBadge({ priority }: { priority: TicketPriority }) {
-  const c = config[priority]
+  const c = config[priority] ?? { label: priority, className: 'bg-gray-100 text-gray-700' }
   return (
     <span className={cn('inline-flex items-center px-2 py-0.5 rounded text-xs font-medium', c.className)}>
       {c.label}
