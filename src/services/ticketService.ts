@@ -136,7 +136,7 @@ export async function fetchArtifacts(ticketId: string): Promise<Artifact[]> {
 export async function fetchAuditLog(ticketId: string): Promise<AuditLog[]> {
   const { data, error } = await supabase
     .from('audit_logs')
-    .select('*, user:users(*), agent:agents(*)')
+    .select('*, user:users!user_id(*), agent:agents!agent_id(*)')
     .eq('ticket_id', ticketId)
     .order('created_at', { ascending: false })
   if (error) throw error
